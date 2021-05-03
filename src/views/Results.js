@@ -14,7 +14,7 @@ const Results = () => {
     useEffect(() => {
         console.log('user effect ran')
 
-    }, [handleClickBuyButton]);
+    }, []);
     return (
         <div className="Results">
             <h1>Overzicht resultaten: </h1>    

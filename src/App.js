@@ -1,17 +1,34 @@
 import Navbar from './Navbar'
-// import Home from './views/Home'
+import Home from './views/Home'
 import Tickets from './views/Tickets'
 import Results from './views/Results'
-function App() {
+import About from './views/About'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
   
+function App() {
+
   return (
-    <div className="App">
-      <Navbar/>
-      <div className="content">
-        <Tickets/>
-        {/* <Results/> */}
-      </div>
+<Router>
+  <div className="App">
+    <Navbar />
+    <div className="content">
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route path="/Tickets">
+          <Tickets />
+        </Route>
+        <Route path="/Results">
+          <Results />
+        </Route>
+        <Route path="/About">
+          <About />
+        </Route>
+      </Switch>
     </div>
+  </div>
+</Router>
   );
 }
 
