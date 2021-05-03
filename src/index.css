@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+/* base styles */
+* {
+  margin: 0;
+  font-family: "Quicksand";
+  color: #333;
+}
+.navbar {
+  max-width: 100%;
+  padding: 0.5rem 2rem;
+  display: flex;
+  align-items: center;
+  max-width: 80rem;
+  margin:  auto;
+  border-bottom: 1px solid #f2f2f2;
+}
+.navbar h1 {
+  color: #3386f3;
+  font-size: 1.5rem;
+}
+.navbar .links {
+  margin-left: auto;
+}
+.navbar a {
+  font-size: 1.5rem 2rem;
+  margin-left: 1.5rem;
+  text-decoration: none;
+  padding: 0.6rem;
+}
+.navbar a:hover {
+  /* color: #3386f3; */
+  color: #f3336d;
+}
+.content {
+  max-width: 600px;
+  margin: 1rem auto;
+  padding: 1rem;
+}
+.result-box :hover{
+  background-color: #ecf2fa;
+}
+.tickets-result{
+  padding: 1rem 2rem;
+  /* margin: 1rem 0; */
+  border-bottom: 1px solid #3386f3;
+}
+/* .tickets-result :hover{
+
+} */
+.tickets-result h1{
+  color: #f3336d;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tickets-result h2{
+font-size: 1.2rem;
+margin-bottom: 0.5rem;
+}
+
