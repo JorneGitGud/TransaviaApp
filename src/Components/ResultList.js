@@ -1,18 +1,36 @@
+import { useContext, useEffect, useState } from "react";
+import axios from '../Components/AxiosFactory';
 const ResultList = (props) => {
-    const tickets = props.tickets
+   
+    //variables
+    const userData = props;
+    const [tickets, setTickets] = useState([]);
+    
+    //methods
+    const getTickets = (() => {
+        axios.get(`https://api.transavia.com/v1/flightoffers/[?AMS]`)
+            .then(res => {
+                const data = res.data;
+                console.log(data)
+
+                // const options = data.map(data => ({
+                //     "value": data.id,
+                //     "label": data.name + ", " + data.country.name
+                // }))
+                // setAirports(options)
+            })
+            .then(() => {
+                if (tickets) console.log('fetched data')
+            }
+            ).catch((e) => {
+                console.log('Something went wrong fetching the data.  ' + e);
+            })
+    })
+
+    //template
     return ( 
         <div className="Results">
-        {tickets.map((ticket) => (
-            <div className="tickets-result" key={ticket.Id}>
-                <h1>Optie: {ticket.Id}</h1>
-                <h2>prijs: {ticket.Price}</h2>
-                <h2>Vetrek om: {ticket.TimeDepature}</h2>
-                <h2>Aankomst om: {ticket.TimeArrival}</h2>
-                <h2>overstappen: {ticket.Stops} x </h2>
-                <button onClick={() => props.myFunction(ticket.Id)}>Kopen</button>
-            </div>
-            
-        ))}
+        
         </div>
      );
 }
