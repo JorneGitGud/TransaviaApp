@@ -4,25 +4,37 @@ const ResultList = (props) => {
    
     //variables
     const userData = props;
-    const [tickets, setTickets] = useState([]);
-    
+    const config ={params: { origin: 'AMS', destination: 'AGP', originDepartureDate: '20210630-20210710',
+    daysAtDestination: '5' }}
+    const [results, setResults] = useState([])
+    const [hasResults, setHasResults] = useState(false)
     //methods
-    const getTickets = (() => {
-        axios.get(`https://api.transavia.com/v1/flightoffers/[?AMS]`)
-            .then(res => {
-                const data = res.data;
-                console.log(data)
 
-                // const options = data.map(data => ({
-                //     "value": data.id,
-                //     "label": data.name + ", " + data.country.name
-                // }))
-                // setAirports(options)
+
+    useEffect(() => {
+       getTickets();
+    }, []);
+    const getTickets = (() => {
+        
+        axios.get('https://api.transavia.com/v1/flightoffers/?', config)
+                .then(res => {
+                const data = res.data;
+                const options = data.flightOffer.map(data => ({
+                    "pricePerPassenger": data.pricingInfoSum.totalPriceOnePassenger,
+                    "priceAllPassengers": data.pricingInfoSum.totalPriceAllPassengers,
+                    "inboundArrDateTime" : data.inboundFlight.arrivalDateTime,
+                    "inboundDepDateTime" : data.inboundFlight.departureDateTime,
+                    "outboundArrDateTime" : data.outboundFlight.arrivalDateTime,
+                    "outboundDepDateTime" : data.outboundFlight.departureDateTime,
+                }))
+                setResults(options)
+               
             })
             .then(() => {
-                if (tickets) console.log('fetched data')
-            }
-            ).catch((e) => {
+                console.log(results)
+
+            })
+            .catch((e) => {
                 console.log('Something went wrong fetching the data.  ' + e);
             })
     })
@@ -30,7 +42,10 @@ const ResultList = (props) => {
     //template
     return ( 
         <div className="Results">
-        
+            <div className="wrapper">
+            <h1>Results</h1>
+            
+            </div>
         </div>
      );
 }

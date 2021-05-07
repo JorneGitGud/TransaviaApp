@@ -112,6 +112,7 @@ font-size: 1.2rem;
 font-size: 1.5rem;
 }
 .wrapper{
+  margin: 0.5rem;
   background-color: #4e466327;
   padding: 0.5rem;
   border-radius: 1rem;  

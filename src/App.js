@@ -1,7 +1,6 @@
 import Navbar from './Navbar'
 import Home from './views/Home'
 import Tickets from './views/Tickets'
-import Results from './views/Results'
 import About from './views/About'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
@@ -21,9 +20,6 @@ function App() {
               </Route>
               <Route path="/Tickets">
                 <Tickets />
-              </Route>
-              <Route path="/Results">
-                <Results />
               </Route>
               <Route path="/About">
                 <About />
