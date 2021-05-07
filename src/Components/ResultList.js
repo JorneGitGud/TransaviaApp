@@ -3,23 +3,24 @@ import axios from '../Components/AxiosFactory';
 const ResultList = (props) => {
    
     //variables
-    const userData = props;
-    const config ={params: { origin: 'AMS', destination: 'AGP', originDepartureDate: '20210630-20210710',
-    daysAtDestination: '5' }}
+    const config = props.userChoices;
+  
     const [results, setResults] = useState([])
     const [hasResults, setHasResults] = useState(false)
-    //methods
-
-
+    
+    //methods    
     useEffect(() => {
-       getTickets();
+        getTickets();
     }, []);
+
     const getTickets = (() => {
         
         axios.get('https://api.transavia.com/v1/flightoffers/?', config)
                 .then(res => {
                 const data = res.data;
                 const options = data.flightOffer.map(data => ({
+                    "destination": data.outboundFlight.arrivalAirport.locationCode,
+                    "origin": data.outboundFlight.departureAirport.locationCode,
                     "pricePerPassenger": data.pricingInfoSum.totalPriceOnePassenger,
                     "priceAllPassengers": data.pricingInfoSum.totalPriceAllPassengers,
                     "inboundArrDateTime" : data.inboundFlight.arrivalDateTime,
@@ -30,13 +31,14 @@ const ResultList = (props) => {
                 setResults(options)
                
             })
-            .then(() => {
-                console.log(results)
-
-            })
             .catch((e) => {
                 console.log('Something went wrong fetching the data.  ' + e);
             })
+    })
+
+    const printMyStuff = (() => {
+        console.log(config.params.toString())
+        console.log(results)
     })
 
     //template
@@ -44,6 +46,7 @@ const ResultList = (props) => {
         <div className="Results">
             <div className="wrapper">
             <h1>Results</h1>
+            <p><button className='form-button' onClick={printMyStuff}>print</button></p>
             
             </div>
         </div>

@@ -7,10 +7,11 @@ import ResultList from '../Components/ResultList'
 import "react-datepicker/dist/react-datepicker.css";
 
 const Tickets = () => {
-    //variables
+    //variables logic
     const [airports, setAirports] = useState([]);
     const timeOptions = ([2, 4, 6, 8, 12, 16, 24, 48]);
     const [selectTimeOption, setSelectTimeOptions] = useState([]);
+    const [showResultList, setShowResultList] = useState(false)
 
     //user defined variables
     const [selectedAirport, setSelectedAirport] = useState();
@@ -20,10 +21,11 @@ const Tickets = () => {
     const [overnights, setOvernights] = useState(5);
     const [userChoices, setUserChoices] = useState([])
     //methods
+
     useEffect(() => {
         setTimeVariables();
         getAirports();
-        setUserChoices();
+        //setUserChoices();
     }, []);
 
     const setTimeVariables = (() => {
@@ -33,6 +35,7 @@ const Tickets = () => {
         }))
         setSelectTimeOptions(options)
     });
+
     const parseDate = ((date) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -45,8 +48,6 @@ const Tickets = () => {
             day = '0' + day;
 
         return [year, month, day].join('');
-
-
     })
 
     const getAirports = (() => {
@@ -65,21 +66,25 @@ const Tickets = () => {
                 console.log('Something went wrong fetching the data.  ' + e);
             })
     });
+
     const handleFindTickets = (() => {
-        setUserChoices([{
-            selectedAirport: selectedAirport,
-            firstDepartureDate: firstDepartureDate,
-            lastDepartureDate: lastDepartureDate,
-            maxTravelTime: maxTravelTime,
-            overnights: overnights
-        }])
+        setUserChoices({params:{
+            origin: 'AMS',
+            destination: selectedAirport,
+            originDepartureDate: parseDate(firstDepartureDate)+'-'+parseDate(lastDepartureDate),
+            daysAtDestination: overnights
+        }})        
+        setShowResultList(true)
+        // should validate dates
     });
 
+    // delete when done
     const printMyStuff = (() => {
         // console.log(airports)
         //console.log(Date.parse(firstDepartureDate))
-        console.log(firstDepartureDate)
-        console.log(parseDate(firstDepartureDate))
+        //console.log(firstDepartureDate)
+        //console.log(parseDate(firstDepartureDate))
+        console.log(userChoices)
     })
 
     const handleBuyTickets = (() => {
@@ -98,7 +103,6 @@ const Tickets = () => {
                     <Select options={airports} onChange={(e) => setSelectedAirport(e.value)}></Select>
                     <h2>Vertrek tussen:</h2>
                     <DatePicker dateFormat="yyyy/MM/dd" selected={firstDepartureDate} onChange={date => setfirstDepartureDate(date)} />
-                        /* fix Spacing */
                     <DatePicker dateFormat="yyyy/MM/dd" selected={lastDepartureDate} onChange={date => setlastDepartureDate(date)} />
                     <h2>Kies de maximale reistijd:</h2>
                     <Select options={selectTimeOption} onChange={(e) => setMaxTravelTime(e.value)}></Select>
@@ -119,8 +123,8 @@ const Tickets = () => {
                     </div>
                 </div>
             </div>
-            {userChoices && <ResultList userChoices={userChoices} myFunction={handleBuyTickets} />}
-
+            {showResultList && <ResultList userChoices={userChoices} myFunction={handleBuyTickets} />}
+            
         </div>
 
     );
