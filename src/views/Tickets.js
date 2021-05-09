@@ -68,14 +68,16 @@ const Tickets = () => {
     });
 
     const handleFindTickets = (() => {
-        setUserChoices({params:{
-            origin: 'AMS',
-            destination: selectedAirport,
-            originDepartureDate: parseDate(firstDepartureDate)+'-'+parseDate(lastDepartureDate),
-            daysAtDestination: overnights
-        }})        
+        setUserChoices({
+            params: {
+                origin: 'AMS',
+                destination: selectedAirport,
+                originDepartureDate: parseDate(firstDepartureDate) + '-' + parseDate(lastDepartureDate),
+                daysAtDestination: overnights,
+                maxTravelTime: maxTravelTime
+            }
+        })
         setShowResultList(true)
-        // should validate dates
     });
 
     // delete when done
@@ -96,9 +98,9 @@ const Tickets = () => {
         <div>
             <div className="wrapper">
                 <div className="tickets">
+
                     <h1>Tickets</h1>
                     <p>Selecteer hieronder uw bestemming, datum en aantal personen waarme u op reis wilt.</p>
-
 
                     <Select options={airports} onChange={(e) => setSelectedAirport(e.value)}></Select>
                     <h2>Vertrek tussen:</h2>
@@ -116,15 +118,22 @@ const Tickets = () => {
                             onChange={(e) => setOvernights(e.target.value)}
                         />
                     </label>
-                    <div className="space">
-                        <p>Ben je klaar met invullen? klik op de button hier onder.</p>
-                        <p><button className='form-button' onClick={handleFindTickets}>Vind tickets</button></p>
-                        <p><button className='form-button' onClick={printMyStuff}>print</button></p>
-                    </div>
+                    {showResultList
+                        ? <div className="space">
+                            <p>Niet het gewenste resultaat? klik op de button om het form te resetten</p>
+                            <p><button onClick={() => {
+                                window.location.reload()
+                            }}>Zoek opnieuw</button></p>
+                        </div>
+                        : <div className="space">
+                            <p>Ben je klaar met invullen? klik op de button hier onder.</p>
+                            <p><button onClick={handleFindTickets}>Vind tickets</button></p>
+                        </div>
+                    }
                 </div>
             </div>
             {showResultList && <ResultList userChoices={userChoices} myFunction={handleBuyTickets} />}
-            
+
         </div>
 
     );

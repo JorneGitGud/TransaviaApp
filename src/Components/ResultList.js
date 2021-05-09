@@ -11,6 +11,7 @@ const ResultList = (props) => {
     const [sortType, setSortType] = useState('');
     //methods    
     useEffect(() => {
+        console.log()
         if (!hasResults) {
             getTickets()
         }
@@ -55,6 +56,8 @@ const ResultList = (props) => {
                     "inboundDepDateTime": data.inboundFlight.departureDateTime,
                     "outboundArrDateTime": data.outboundFlight.arrivalDateTime,
                     "outboundDepDateTime": data.outboundFlight.departureDateTime,
+                    "travelTimeOutbound": Math.round(Math.floor(Date.parse(data.outboundFlight.arrivalDateTime) - Date.parse(data.outboundFlight.departureDateTime)) / 3600000),
+                    "travelTimeInbound": Math.round(Math.floor(Date.parse(data.inboundFlight.arrivalDateTime) - Date.parse(data.inboundFlight.departureDateTime)) / 3600000)
                 }))
                 setResults(options)
                 setResulstCopy(options)
@@ -68,6 +71,7 @@ const ResultList = (props) => {
 
 
     const printMyStuff = (() => {
+
         console.log(results)
 
     })
@@ -75,24 +79,35 @@ const ResultList = (props) => {
     //template
     return (
         <div className="Results">
-            <div className="wrapper">
-                <h1>Results</h1>
-                <p><button onClick={printMyStuff}>print</button></p>
-                <h2>sorteer op:</h2>
-                <select onChange={(e) => setSortType(e.target.value)}>
-                    <option value='dateAsc'> Datum</option>
-                    <option value='priceAsc'> Prijs oplopend </option>
-                    <option value='priceDesc'> Prijs aflopend</option>
-                </select>
-                {/* <button onClick={invertArray}>/\\/</button> */}
-                {results.map(result => (
-                    <div className="result-list" key={result.id}>
-                        <h2>{`Prijs: ${result.priceAllPassengers}`}</h2>
-                        <p>{`Heenreis: ${result.outboundDepDateTime}  => aankomst: ${result.outboundArrDateTime}`}</p>
-                        <p>{`Terugreis: ${result.inboundDepDateTime}  => aankomst: ${result.inboundArrDateTime}`}</p>
-                        <button>buy</button>
-                    </div>
-                ))}
+            <div className="wrapper result-list">
+                {
+                    resultsCopy.length > 0
+                        ? <div>
+                            <h1>Results</h1>
+                            <h2>sorteer op:</h2>
+                            <select onChange={(e) => setSortType(e.target.value)}>
+                                <option value='dateAsc'> Datum</option>
+                                <option value='priceAsc'> Prijs oplopend </option>
+                                <option value='priceDesc'> Prijs aflopend</option>
+                            </select>
+                            {/* <button onClick={invertArray}>/\\/</button> */}
+                            {results.map(result => (
+                                <div key={result.id}>
+                                    {(result.travelTimeInbound<config.params.maxTravelTime || result.travelTimeOutbound<config.params.maxTravelTime ) && <div>
+                                    <h2>{`Prijs: ${result.priceAllPassengers}`}</h2>
+                                    <p>{`Heenreis: ${result.outboundDepDateTime.substring(0, 10)} om: ${result.outboundDepDateTime.substring(11, 20)}`}</p>
+                                    <p>{`Aankomst: ${result.outboundArrDateTime.substring(0, 10)} om: ${result.outboundArrDateTime.substring(11, 20)}`}</p>
+                                    <p>{`reisduur: ${result.travelTimeOutbound}`}</p>
+                                    <p>{`Terugreis: ${result.inboundDepDateTime.substring(0, 10)} om: ${result.inboundDepDateTime.substring(11, 20)}`}</p>
+                                    <p>{`Aankomst: ${result.inboundArrDateTime.substring(0, 10)} om: ${result.inboundArrDateTime.substring(11, 20)}`}</p>
+                                    <p>{`reisduur: ${result.travelTimeInbound} uur.`}</p>
+                                    <button>buy</button>
+                                    </div>}
+                                </div>
+                            ))}
+                        </div>
+                        : <h2>Geen resultaten</h2>
+                }
             </div>
         </div>
     );

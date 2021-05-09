@@ -17,7 +17,7 @@
   z-index: -100;
   height: 100vh;
   width: 100%;
-  background-image:url(./Assets/bkgr4.jpg) ;
+  background-image:url(./Assets/bkgr7.jpg) ;
   background-size: cover;
   position: fixed;
 }
@@ -29,14 +29,21 @@ p{
   color: #fff;
   text-decoration: none;
 }
+
 h1{
-  color: #df2f37;
+  color: #23beb4;
   font-size: 1.5rem;
+}
+.result-list h1{
+  color: #ff11b8;
 }
 h2{
   font-size: 1.2rem;
   padding-top: 1rem;
-  color: #df2f37;
+  color: #23beb4;
+}
+.result-list h2{
+  color: #ff11b8;
 }
 label{
   padding: 1rem;
@@ -71,15 +78,15 @@ input{
   margin-left: auto;
 }
 .navbar a {
-  color: #df2f37;
-  font-style: bold;
-  font-size: 1.3rem;  
+  color: #ff11b8;
+  font-size: 1.5rem;  
   text-decoration: none;
   padding: 0.6rem;
+  
 }
 .navbar a:hover {
   /* color: #3386f3; */
-  color: #df2f37;
+  /* color: #fa4b4b; */
   background:  #4e46631e;
 }
 .content {
@@ -100,7 +107,6 @@ input{
 
 } */
 .tickets-result h1{
-  color: #df2f37;
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
 }
@@ -113,7 +119,7 @@ font-size: 1.5rem;
 }
 .wrapper{
   margin: 0.5rem;
-  background-color: #4e466327;
+  background-color: #4f4663a2;
   padding: 0.5rem;
   border-radius: 1rem;  
 }
@@ -131,7 +137,7 @@ font-size: 1.5rem;
   margin-bottom: 1rem;
   text-align: center;
 }
-.form-button{
+button{
   text-align: center;
   font-style: bold;
   background: #4e4663a9;
@@ -143,16 +149,37 @@ font-size: 1.5rem;
 }
 
 @media (max-width: 767px){
+  h1{
+    color: #fa4b4b;
+  }
+  .result-list h1{
+    color: #fa4b4b;
+  }
+  h2{
+    color: #fa4b4b;
+  }
+  .result-list h2{
+    color: #fa4b4b;
+  }
   .navbar h1 {
     font-size: 0.5rem;
     max-height: none;
   } 
   .navbar a{
     margin: 0;
-    padding-left: 1rem;
-    
+    padding-left: 1rem;    
+  }
+  .wrapper{
+    background-color: #4e4663b7;
   }
   .content {
     margin-top: 5rem;
+  }
+  .bkgr{
+    background-image:url(./Assets/bkgr2.jpg) ;
+  }
+  .navbar a {
+  color: #fa4b4b;
+  font-size: 1.3rem; 
   }
 }
