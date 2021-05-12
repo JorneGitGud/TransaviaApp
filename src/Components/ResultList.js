@@ -1,13 +1,11 @@
 // this class gets and displays the results from the userChoises made in Tickets.js
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from '../Components/AxiosFactory';
 const ResultList = (props) => {
 
     //variables
     const config = props.userChoices;
-    const [dateSorted, setDatSorted] = useState(false)
     const [results, setResults] = useState([])
-    const [filteredResults, setFilteredResults] = useState(0)
     const [resultsCopy, setResulstCopy] = useState([])
     const [hasResults, setHasResults] = useState(false)
     const [sortType, setSortType] = useState('');
@@ -29,13 +27,13 @@ const ResultList = (props) => {
             priceDesc: 'priceAllPassengers',
         };
 
-        if (type == 'date') {
+        if (type === 'date') {
             setResults(resultsCopy)
         }
         else {
             const sortProperty = types[type];
             const sorted = [...resultsCopy].sort((a, b) => b[sortProperty] - a[sortProperty]);
-            if (type == 'priceAsc') {
+            if (type === 'priceAsc') {
                 console.log('reverse')
                 sorted.reverse();
             }

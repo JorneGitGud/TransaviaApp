@@ -17,7 +17,7 @@ const Tickets = () => {
     const [selectedOriginAirport, setSelectedOriginAirport] = useState('AMS');
     const [selectedDestinationAirport, setSelectedDestinationAirport] = useState('AGP');
     const [firstDepartureDate, setfirstDepartureDate] = useState(new Date());
-    const [lastDepartureDate, setlastDepartureDate] = useState(new Date(firstDepartureDate.getFullYear(), firstDepartureDate.getMonth() + 1, firstDepartureDate.getDate() - 1));
+    const [lastDepartureDate, setlastDepartureDate] = useState(new Date(firstDepartureDate.getFullYear(), firstDepartureDate.getMonth(), firstDepartureDate.getDate() + 10));
     const [minTravelTime, setMinTravelTime] = useState(0)
     const [maxTravelTime, setMaxTravelTime] = useState(48)
     const [overnights, setOvernights] = useState(1);
@@ -86,6 +86,12 @@ const Tickets = () => {
     const handleBuyTickets = (() => {
         console.log("You have succesfully navigated to the end of this project. Well done!")
     })
+    //checks is the dates are valid, not more then 30 days and no les then 1
+    const dateCheck = (()=>{
+        if(Math.ceil((Math.abs(firstDepartureDate.getTime() - lastDepartureDate.getTime()) / (1000 * 3600 * 24))) > 30){return false};
+        if(Math.ceil((Math.abs(firstDepartureDate.getTime() - lastDepartureDate.getTime()) / (1000 * 3600 * 24))) < 1) return false;
+        else{ return true} 
+    })
 
     //template
     return (
@@ -106,6 +112,8 @@ const Tickets = () => {
                             <Select options={airports} onChange={(e) => setSelectedDestinationAirport(e.value)}></Select>
                             <h3>standaard Malaga, Spanje</h3>
 
+                            {selectedOriginAirport === selectedDestinationAirport && <div className="warning"><h1>Ongeldige invoer luchthaven data</h1></div>}
+
                             <h2>Kies de minimale reistijd:</h2>
                             <Select options={selectTimeOption} onChange={(e) => setMinTravelTime(e.value)}></Select>
                             <h3>standaard 0 uur</h3>
@@ -113,21 +121,21 @@ const Tickets = () => {
                             <h2>Kies de maximale reistijd:</h2>
                             <Select options={selectTimeOption} onChange={(e) => setMaxTravelTime(e.value)}></Select>
                             <h3>standaard 48 uur</h3>
-
+                            {maxTravelTime < minTravelTime && <div className="warning"><h1>Ongeldige invoer reistijd</h1></div>}
                             <h2>Vertrek tussen:</h2>
                             <DatePicker dateFormat="yyyy/MM/dd" selected={firstDepartureDate} onChange={date => setfirstDepartureDate(date)} />
                             <DatePicker dateFormat="yyyy/MM/dd" selected={lastDepartureDate} onChange={date => setlastDepartureDate(date)} />
                             <h3>Maximaal 30 dagen.</h3>
+                            {!dateCheck() && <div className="warning"><h1>Ongeldige invoer vetrek data</h1></div>}
 
-                            <label>
-                                <h2>Vul het aantal overnachtingen in:</h2>
-                                <input
-                                    type="number"
-                                    required
-                                    value={overnights}
-                                    onChange={(e) => setOvernights(e.target.value)}
-                                />
-                            </label>
+                            <h2>Vul het aantal overnachtingen in:</h2>
+                            <input
+                                type="number"
+                                required
+                                value={overnights}
+                                onChange={(e) => setOvernights(e.target.value)}
+                            />
+                            {overnights<1 && <div className="warning"><h1>Ongeldige invoer overnachtingen</h1></div> }
                             <div className="space">
                                 <p>Ben je klaar met invullen? klik op de button hier onder.</p>
                                 <p><button onClick={handleFindTickets}>Vind tickets</button></p>
