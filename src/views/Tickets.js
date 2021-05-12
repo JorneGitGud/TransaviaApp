@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Select from 'react-select'
 import axios from '../Components/AxiosFactory';
 import DatePicker from "react-datepicker";
@@ -9,25 +9,26 @@ import "react-datepicker/dist/react-datepicker.css";
 const Tickets = () => {
     //variables logic
     const [airports, setAirports] = useState([]);
-    const timeOptions = ([2, 4, 6, 8, 12, 16, 24, 48]);
+    const timeOptions = ([0, 2, 4, 6, 8, 12, 16, 24, 48]);
     const [selectTimeOption, setSelectTimeOptions] = useState([]);
     const [showResultList, setShowResultList] = useState(false)
 
     //user defined variables
-    const [selectedAirport, setSelectedAirport] = useState();
+    const [selectedOriginAirport, setSelectedOriginAirport] = useState('AMS');
+    const [selectedDestinationAirport, setSelectedDestinationAirport] = useState('AGP');
     const [firstDepartureDate, setfirstDepartureDate] = useState(new Date());
-    const [lastDepartureDate, setlastDepartureDate] = useState(new Date());
-    const [maxTravelTime, setMaxTravelTime] = useState(24)
-    const [overnights, setOvernights] = useState(5);
+    const [lastDepartureDate, setlastDepartureDate] = useState(new Date(firstDepartureDate.getFullYear(), firstDepartureDate.getMonth() + 1, firstDepartureDate.getDate() - 1));
+    const [minTravelTime, setMinTravelTime] = useState(0)
+    const [maxTravelTime, setMaxTravelTime] = useState(48)
+    const [overnights, setOvernights] = useState(1);
     const [userChoices, setUserChoices] = useState([])
-    //methods
 
+    //methods
     useEffect(() => {
         setTimeVariables();
         getAirports();
-        //setUserChoices();
     }, []);
-
+    //sets selectedTimeOption which are used by the select travel time dropdown buttons.
     const setTimeVariables = (() => {
         const options = timeOptions.map(time => ({
             "value": time,
@@ -35,7 +36,7 @@ const Tickets = () => {
         }))
         setSelectTimeOptions(options)
     });
-
+    //this method parses the date to a format that kan be send to the api
     const parseDate = ((date) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -49,7 +50,7 @@ const Tickets = () => {
 
         return [year, month, day].join('');
     })
-
+    //fetches the list of airports which are use to fill in the select airport dropdown buttons.
     const getAirports = (() => {
         axios.get(`https://api.transavia.com/v2/airports/`)
             .then(res => {
@@ -66,31 +67,24 @@ const Tickets = () => {
                 console.log('Something went wrong fetching the data.  ' + e);
             })
     });
-
+    //this method sets the Params for the api, this object is given to the ResultsList component
     const handleFindTickets = (() => {
+        setShowResultList(false)
         setUserChoices({
             params: {
-                origin: 'AMS',
-                destination: selectedAirport,
+                origin: selectedOriginAirport,
+                destination: selectedDestinationAirport,
                 originDepartureDate: parseDate(firstDepartureDate) + '-' + parseDate(lastDepartureDate),
                 daysAtDestination: overnights,
+                minTravelTime: minTravelTime,
                 maxTravelTime: maxTravelTime
             }
         })
         setShowResultList(true)
     });
-
-    // delete when done
-    const printMyStuff = (() => {
-        // console.log(airports)
-        //console.log(Date.parse(firstDepartureDate))
-        //console.log(firstDepartureDate)
-        //console.log(parseDate(firstDepartureDate))
-        console.log(userChoices)
-    })
-
+    //this function is where the scope of the project ends. 
     const handleBuyTickets = (() => {
-
+        console.log("You have succesfully navigated to the end of this project. Well done!")
     })
 
     //template
@@ -99,43 +93,56 @@ const Tickets = () => {
             <div className="wrapper">
                 <div className="tickets">
 
-                    <h1>Tickets</h1>
-                    <p>Selecteer hieronder uw bestemming, datum en aantal personen waarme u op reis wilt.</p>
+                    {!showResultList ?
+                        <div className="search-field">
+                            <h1>Tickets</h1>
+                            <p>Selecteer hieronder uw bestemming, datum en aantal personen waarme u op reis wilt.</p>
 
-                    <Select options={airports} onChange={(e) => setSelectedAirport(e.value)}></Select>
-                    <h2>Vertrek tussen:</h2>
-                    <DatePicker dateFormat="yyyy/MM/dd" selected={firstDepartureDate} onChange={date => setfirstDepartureDate(date)} />
-                    <DatePicker dateFormat="yyyy/MM/dd" selected={lastDepartureDate} onChange={date => setlastDepartureDate(date)} />
-                    <h2>Kies de maximale reistijd:</h2>
-                    <Select options={selectTimeOption} onChange={(e) => setMaxTravelTime(e.value)}></Select>
+                            <h2>Thuis Luchthaven:</h2>
+                            <Select options={airports} onChange={(e) => setSelectedOriginAirport(e.value)}></Select>
+                            <h3>standaard Amsterdam, Nederland</h3>
 
-                    <label>
-                        <h2>Vul het aantal overnachtingen in:</h2>
-                        <input
-                            type="number"
-                            required
-                            value={overnights}
-                            onChange={(e) => setOvernights(e.target.value)}
-                        />
-                    </label>
-                    {showResultList
-                        ? <div className="space">
-                            <p>Niet het gewenste resultaat? klik op de button om het form te resetten</p>
+                            <h2>Bestemming Luchthaven:</h2>
+                            <Select options={airports} onChange={(e) => setSelectedDestinationAirport(e.value)}></Select>
+                            <h3>standaard Malaga, Spanje</h3>
+
+                            <h2>Kies de minimale reistijd:</h2>
+                            <Select options={selectTimeOption} onChange={(e) => setMinTravelTime(e.value)}></Select>
+                            <h3>standaard 0 uur</h3>
+
+                            <h2>Kies de maximale reistijd:</h2>
+                            <Select options={selectTimeOption} onChange={(e) => setMaxTravelTime(e.value)}></Select>
+                            <h3>standaard 48 uur</h3>
+
+                            <h2>Vertrek tussen:</h2>
+                            <DatePicker dateFormat="yyyy/MM/dd" selected={firstDepartureDate} onChange={date => setfirstDepartureDate(date)} />
+                            <DatePicker dateFormat="yyyy/MM/dd" selected={lastDepartureDate} onChange={date => setlastDepartureDate(date)} />
+                            <h3>Maximaal 30 dagen.</h3>
+
+                            <label>
+                                <h2>Vul het aantal overnachtingen in:</h2>
+                                <input
+                                    type="number"
+                                    required
+                                    value={overnights}
+                                    onChange={(e) => setOvernights(e.target.value)}
+                                />
+                            </label>
+                            <div className="space">
+                                <p>Ben je klaar met invullen? klik op de button hier onder.</p>
+                                <p><button onClick={handleFindTickets}>Vind tickets</button></p>
+                            </div>
+                        </div>
+
+                        : <div className="space">
                             <p><button onClick={() => {
                                 window.location.reload()
                             }}>Zoek opnieuw</button></p>
-                        </div>
-                        : <div className="space">
-                            <p>Ben je klaar met invullen? klik op de button hier onder.</p>
-                            <p><button onClick={handleFindTickets}>Vind tickets</button></p>
-                        </div>
-                    }
+                        </div>}
                 </div>
             </div>
             {showResultList && <ResultList userChoices={userChoices} myFunction={handleBuyTickets} />}
-
         </div>
-
     );
 }
 

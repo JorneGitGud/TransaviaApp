@@ -1,3 +1,4 @@
+// this class gets and displays the results from the userChoises made in Tickets.js
 import { useContext, useEffect, useState } from "react";
 import axios from '../Components/AxiosFactory';
 const ResultList = (props) => {
@@ -6,6 +7,7 @@ const ResultList = (props) => {
     const config = props.userChoices;
     const [dateSorted, setDatSorted] = useState(false)
     const [results, setResults] = useState([])
+    const [filteredResults, setFilteredResults] = useState(0)
     const [resultsCopy, setResulstCopy] = useState([])
     const [hasResults, setHasResults] = useState(false)
     const [sortType, setSortType] = useState('');
@@ -17,7 +19,7 @@ const ResultList = (props) => {
         }
         sortArray(sortType);
     }, [sortType]);
-
+    //sorts the results array
     const sortArray = ((type) => {
         console.log('sorting')
 
@@ -40,9 +42,8 @@ const ResultList = (props) => {
             setResults(sorted);
         }
     });
-
+    //gets tickets from api
     const getTickets = (() => {
-
         axios.get('https://api.transavia.com/v1/flightoffers/?', config)
             .then(res => {
                 const data = res.data;
@@ -67,15 +68,18 @@ const ResultList = (props) => {
                 console.log('Something went wrong fetching the data.  ' + e);
             })
     })
-
-
-
-    const printMyStuff = (() => {
-
-        console.log(results)
-
+    //Filters results based on selected traveltime range.
+    const shouldShow = ((res) => {
+        if ((
+            res.travelTimeInbound < config.params.maxTravelTime || res.travelTimeOutbound < config.params.maxTravelTime)
+            &&
+            (res.travelTimeInbound > config.params.minTravelTime || res.travelTimeOutbound > config.params.minTravelTime)) {
+            return true;
+        }
+        else {
+            return false;
+        }
     })
-
     //template
     return (
         <div className="Results">
@@ -83,31 +87,37 @@ const ResultList = (props) => {
                 {
                     resultsCopy.length > 0
                         ? <div>
-                            <h1>Results</h1>
+                            <h1>Resultaten {results.length}</h1>
+                            <h3>Resultaten die niet aan uw zoekopdracht voldoen worden niet weergegeven</h3>
                             <h2>sorteer op:</h2>
                             <select onChange={(e) => setSortType(e.target.value)}>
                                 <option value='dateAsc'> Datum</option>
                                 <option value='priceAsc'> Prijs oplopend </option>
                                 <option value='priceDesc'> Prijs aflopend</option>
                             </select>
-                            {/* <button onClick={invertArray}>/\\/</button> */}
                             {results.map(result => (
                                 <div key={result.id}>
-                                    {(result.travelTimeInbound<config.params.maxTravelTime || result.travelTimeOutbound<config.params.maxTravelTime ) && <div>
-                                    <h2>{`Prijs: ${result.priceAllPassengers}`}</h2>
-                                    <p>{`Heenreis: ${result.outboundDepDateTime.substring(0, 10)} om: ${result.outboundDepDateTime.substring(11, 20)}`}</p>
-                                    <p>{`Aankomst: ${result.outboundArrDateTime.substring(0, 10)} om: ${result.outboundArrDateTime.substring(11, 20)}`}</p>
-                                    <p>{`reisduur: ${result.travelTimeOutbound}`}</p>
-                                    <p>{`Terugreis: ${result.inboundDepDateTime.substring(0, 10)} om: ${result.inboundDepDateTime.substring(11, 20)}`}</p>
-                                    <p>{`Aankomst: ${result.inboundArrDateTime.substring(0, 10)} om: ${result.inboundArrDateTime.substring(11, 20)}`}</p>
-                                    <p>{`reisduur: ${result.travelTimeInbound} uur.`}</p>
-                                    <button>buy</button>
-                                    </div>}
+                                    { shouldShow(result) &&
+                                        <div>
+                                            <h2>{`Prijs: ${result.priceAllPassengers}`}</h2>
+                                            <p>{`Vanaf: ${result.origin}`}</p>
+                                            <p>{`Naar: ${result.destination}`}</p>
+                                            <p>{`Heenreis: ${result.outboundDepDateTime.substring(0, 10)} om: ${result.outboundDepDateTime.substring(11, 20)}`}</p>
+                                            <p>{`Aankomst: ${result.outboundArrDateTime.substring(0, 10)} om: ${result.outboundArrDateTime.substring(11, 20)}`}</p>
+                                            <p>{`reisduur: ${result.travelTimeOutbound}`}</p>
+                                            <p>{`Terugreis: ${result.inboundDepDateTime.substring(0, 10)} om: ${result.inboundDepDateTime.substring(11, 20)}`}</p>
+                                            <p>{`Aankomst: ${result.inboundArrDateTime.substring(0, 10)} om: ${result.inboundArrDateTime.substring(11, 20)}`}</p>
+                                            <p>{`reisduur: ${result.travelTimeInbound} uur.`}</p>
+                                            <button>buy</button>
+                                        </div>}
                                 </div>
                             ))}
                         </div>
-                        : <h2>Geen resultaten</h2>
-                }
+                        :
+                        <div>
+                            <h1>Resultaten: {results.length}</h1>
+                            <p>Pas de zoek parameters aan en probeer het opnieuw.</p>
+                        </div>}
             </div>
         </div>
     );
