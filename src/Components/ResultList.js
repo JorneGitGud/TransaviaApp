@@ -19,8 +19,6 @@ const ResultList = (props) => {
     }, [sortType]);
     //sorts the results array
     const sortArray = ((type) => {
-        console.log('sorting')
-
         const types = {
             date: 'outboundDepDateTime',
             priceAsc: 'priceAllPassengers',
