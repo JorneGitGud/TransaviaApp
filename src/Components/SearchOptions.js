@@ -19,7 +19,6 @@ const SearchOption = (props) => {
     const [minTravelTime, setMinTravelTime] = useState(0)
     const [maxTravelTime, setMaxTravelTime] = useState(48)
     const [overnights, setOvernights] = useState(1);
-    const [userChoices, setUserChoices] = useState([])
 
     //methods
     useEffect(() => {
@@ -67,7 +66,7 @@ const SearchOption = (props) => {
     });
     //this method sets the Params for the api, this object is given to the ResultsList component
     const handleFindTickets = (() => {
-        setUserChoices({
+        const userChoices = {
             params: {
                 origin: selectedOriginAirport,
                 destination: selectedDestinationAirport,
@@ -76,23 +75,11 @@ const SearchOption = (props) => {
                 minTravelTime: minTravelTime,
                 maxTravelTime: maxTravelTime
             }
-        })
-
-        const temp = {
-            params: {
-                origin: selectedOriginAirport,
-                destination: selectedDestinationAirport,
-                originDepartureDate: parseDate(firstDepartureDate) + '-' + parseDate(lastDepartureDate),
-                daysAtDestination: overnights,
-                minTravelTime: minTravelTime,
-                maxTravelTime: maxTravelTime
-            }
-        }
-              
-        props.onShowResultComponent(temp) 
+        }              
+        props.onShowResultComponent(userChoices) 
     });
    
-    //checks is the dates are valid, not more then 30 days and no less then 1
+    //checks if the dates are valid, not more then 30 days and no less then 1
     const dateCheck = (() => {
         if (Math.ceil((Math.abs(firstDepartureDate.getTime() - lastDepartureDate.getTime()) / (1000 * 3600 * 24))) > 30) { return false };
         if (Math.ceil((Math.abs(firstDepartureDate.getTime() - lastDepartureDate.getTime()) / (1000 * 3600 * 24))) < 1) return false;

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import SearchOptions from '../Components/SearchOptions'
 import ResultList from '../Components/ResultList'
-import DatePicker from "react-datepicker";
 const Tickets = () => {
     //variables
     const [showSearch, setShowSearch] = useState(true);

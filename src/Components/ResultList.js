@@ -11,7 +11,6 @@ const ResultList = (props) => {
     const [sortType, setSortType] = useState('');
     //methods    
     useEffect(() => {
-        console.log()
         if (!hasResults) {
             getTickets()
         }
@@ -32,7 +31,6 @@ const ResultList = (props) => {
             const sortProperty = types[type];
             const sorted = [...resultsCopy].sort((a, b) => b[sortProperty] - a[sortProperty]);
             if (type === 'priceAsc') {
-                console.log('reverse')
                 sorted.reverse();
             }
             setResults(sorted);
